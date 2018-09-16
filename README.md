@@ -1,6 +1,7 @@
 # daocloud-dashboard-element
 
-> A Vue.js project
+> 这是一个个人练习项目，使用vue、element-ui搭建。[roadmap](https://github.com/wanglixiaa/daocloud-dashboard-element/docs/roadmap.md)
+
 
 ## Build Setup
 
