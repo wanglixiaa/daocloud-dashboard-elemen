@@ -1,28 +1,13 @@
 <template>
   <div id="app">
-    <el-container>
-      <el-aside width="200px">
-        <sidebar></sidebar>
-      </el-aside>
-      <el-container>
-        <el-header>
-          <vheader></vheader>
-        </el-header>
-        <el-main>Main</el-main>
-      </el-container>
-    </el-container>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import Header from '@/components/Header'
-import Sidebar from '@/components/Sidebar'
 export default {
   name: 'App',
-  components: {
-    vheader: Header,
-    sidebar: Sidebar
-  }
+  components: ''
 }
 </script>
 
@@ -30,7 +15,39 @@ export default {
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+    border-radius: 4px;
   }
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: " ";
+}
+.clearfix:after {
+  clear: both;
+}
+input{
+  margin:0;
+  padding: 0 10px;
+  width: 287px;
+  height: 32px;
+  color: #3d444f;
+  transition: all .25s ease;
+  background-color: #fff;
+  background-size: 16px 16px;
+  border: 1px solid #ccd1d9;
+  border-radius: 2px;
+  line-height: 1;
+  vertical-align: middle;
+}
+.clearfix{zoom:1;} //ie 6 7
+li{
+  list-style: none;
+}
+a{
+  color: #5d9cec;
+  text-decoration: none;
+}
 html {
   width: 100%;
   height: 100%;
@@ -42,33 +59,13 @@ body {
   color: #555;
   font: 400 1em/1.45 Open Sans,Helvetica Neue,Helvetica,Arial,Hiragino Sans GB,STXihei,STHeiti,Microsoft YaHei,SimHei,sans-serif;
 }
+strong{
+  font-weight: 700;
+}
 
 #app {
   height: 100%;
   width: 100%;
   margin: 0;
-}
-.el-header{
-  background-color: #fff;
-  color: #333;
-  text-align: center;
-  height: 60px;
-}
-
-.el-aside {
-  background-color: #D3DCE6;
-  color: #333;
-  text-align: center;
-  height: 100%;
-}
-
-.el-main {
-  background-color: #E9EEF3;
-  color: #333;
-  text-align: center;
-}
-
-.el-container{
-  height:100%;
 }
 </style>
