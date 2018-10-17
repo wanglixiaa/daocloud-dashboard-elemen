@@ -1,16 +1,24 @@
 <template>
   <div id="sidebar">
     <logo></logo>
-    <navmenu></navmenu>
+    <navmenu v-bind:namespace='namespace'></navmenu>
+    <div @click="kk()">uu</div>
   </div>
 </template>
 <script>
 import Logo from '@/components/Logo'
 import NavMenu from '@/components/NavMenu'
 export default {
+  props: ['namespace'],
   components: {
     logo: Logo,
     navmenu: NavMenu
+  },
+  methods: {
+    kk () {
+      console.log('ff')
+      this.$router.push('/ddd')
+    }
   }
 }
 </script>
