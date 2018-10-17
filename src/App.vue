@@ -18,6 +18,9 @@ export default {
     box-sizing: border-box;
     border-radius: 4px;
   }
+.flex{
+  display: flex;
+}
 .clearfix:before,
 .clearfix:after {
   display: table;

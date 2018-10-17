@@ -6,10 +6,10 @@
         <h1>exciting</h1>
         <div class="info">
           <span class="info-item">
-            镜像:<a>exciting</a>
+            镜像:<a href="https://dashboard.daocloud.io/packages/c355083e-d2f9-4e09-aa49-947fc903e01c">exciting</a>
           </span>
           <span class="info-item ng-scope">
-            代码源:<a>xuzhenglun/docker-shadowsocks</a>
+            代码源:<a href="https://github.com/xuzhenglun/docker-shadowsocks">xuzhenglun/docker-shadowsocks</a>
           </span>
         </div>
       </div>
