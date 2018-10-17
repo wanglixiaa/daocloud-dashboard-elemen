@@ -48,7 +48,6 @@
     <div>
       <div>左</div>
       <div>右</div>
-      
     </div>
   </el-dialog>
 </div>
@@ -94,4 +93,3 @@ div.status{
     background-color:#f1483f;
   }
 </style>
-

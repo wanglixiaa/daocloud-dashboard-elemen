@@ -1,7 +1,7 @@
 <template>
   <div class="app">
     <el-container>
-      <el-header :height="50">
+      <el-header height="50">
         <el-row :gutter="5">
           <el-col :span="6"><div class="grid-content bg-purple">
               <el-button type="primary"><i class="el-icon-upload el-icon--right"></i>创建新stack</el-button>

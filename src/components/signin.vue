@@ -73,7 +73,7 @@ export default {
           uid: value.uid
         }
         this.$cookies.set('token', value.data.access_token)
-        alert(this.$cookies.get('token'))
+        console.log(this.$cookies.get('token'))
         // setTimeout(alert(this.$cookies.get('token')), 1000)
         // alert(this.$cookies.get('token'))
         sessionStorage.setItem('user', JSON.stringify(user))
@@ -85,14 +85,17 @@ export default {
         if (error.response.data.error_id === 'login.password_not_match') {
           this.$refs.password.focus()
           this.tips = '密码错误'
+          this.captchaText()
         } else if (error.response.data.error_id === 'check_captcha_fail') {
           this.$refs.password.focus()
           this.tips = '验证码错误'
           this.password = ''
           this.captcha = ''
+          this.captchaText()
         } else if (error.response.data.error_id === 'login.user_not_found') {
           this.$refs.email.focus()
           this.tips = '用户名错误'
+          this.captchaText()
         }
       })
     },

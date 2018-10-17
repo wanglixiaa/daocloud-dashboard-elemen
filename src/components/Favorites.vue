@@ -1,7 +1,7 @@
 <template>
   <div class="app">
     <el-container>
-      <el-header :height="50">
+      <el-header height="50">
         <el-row :gutter="20">
           <el-col :span="6"><div class="grid-content bg-purple">当前收藏1个镜像</div></el-col>
           <el-col :span="6" :offset="11"><div class="grid-content bg-purple">
