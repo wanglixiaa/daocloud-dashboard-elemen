@@ -7,7 +7,7 @@
     <div>
       <signin></signin>
     </div>
-    <div class="footer">footer</div>
+    <!-- <div class="footer">footer</div> -->
   </div>
 </template>
 <script>

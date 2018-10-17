@@ -32,7 +32,6 @@
         </el-table-column>
         <el-table-column prop="status" label="执行状态" show-overflow-tooltip>
           <template slot-scope="scope">
-            <!-- <el-tag size="mini" :class="colorStyle">{{scope.row.status}}</el-tag> -->
             <span :class="colorStyle(scope.row.status)">{{scope.row.status}}</span>
           </template>
         </el-table-column>
@@ -40,7 +39,6 @@
           show-overflow-tooltip>
           <template slot-scope="scope">
             <el-dropdown size="medium" split-button type="primary" @click="viewDetails">查看详情
-              <!-- <router-link to="ViewDetails" append>查看详情</router-link> -->
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item>手动触发</el-dropdown-item>
                 <el-dropdown-item>删除</el-dropdown-item>
@@ -131,7 +129,7 @@ export default {
       this.getProjectInfo()
     },
     viewDetails () {
-      this.$router.push({path: '/buildflows/ViewDetails'})
+      this.$router.push({path: '/BuildFlowsList/ViewDetails'})
     }
   }
 }

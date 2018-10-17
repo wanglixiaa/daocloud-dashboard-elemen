@@ -11,8 +11,29 @@ Vue.use(Router)
 
 var routes = []
 
-menus.forEach((item) => {
-  item.sub.forEach((sub) => {
+// menus.forEach((item) => {
+//   item.sub.forEach((sub) => {
+//     let children = []
+//     if (sub.children) {
+//       sub.children.forEach(child => {
+//         children.push({
+//           path: `/${sub.componentName}/${child.componentName}`,
+//           name: child.name,
+//           component: () => import(`@/components/${child.componentName}`)
+//         })
+//       })
+//     }
+
+//     routes.push({
+//       path: `/${sub.componentName}`,
+//       name: sub.componentName,
+//       component: () => import(`@/components/${sub.componentName}`),
+//       children: children
+//     })
+//   })
+// })
+menus.forEach(item => {
+  item.sub.forEach(sub => {
     let children = []
     if (sub.children) {
       sub.children.forEach(child => {

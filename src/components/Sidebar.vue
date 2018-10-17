@@ -14,8 +14,8 @@ export default {
     logo: Logo,
     navmenu: NavMenu
   },
-  methods:{
-    kk(){
+  methods: {
+    kk () {
       console.log('ff')
       this.$router.push('/ddd')
     }

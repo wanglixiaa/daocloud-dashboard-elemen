@@ -34,7 +34,6 @@ Vue.directive('focus', {
     el.focus()
   }
 })
-
 // const http = axios.create({
 //   baseURL: 'https://api.daocloud.io'
 // })
@@ -43,13 +42,13 @@ Vue.directive('focus', {
 
 /* eslint-disable no-new */
 router.beforeEach((to, from, next) => {
-  if (to.path === '/login') { // 进入的路由是login则将保存的sessionstorage删除
-    sessionStorage.removeItem('user')
-    // this.$cookie.delet('taken')
-  }
-  let user = JSON.parse(sessionStorage.getItem('user')) // 获取保存的信息
+  // let user = JSON.parse(sessionStorage.getItem('user')) // 获取保存的信息
+  let user = Vue.prototype.$cookies.get('token')
+
   if (!user && to.path !== '/login') { // 若user为空并且将要进入的路由不是login，则进入到login路径
     next({ path: '/login' })
+  } else if (to.matched.length === 0) {
+    next({ path: '/BuildFlowsList' })
   } else { // 如果user不为空 要进入到别的路由或者进入的路由是login 则进入下一个路由
     next()
   }
