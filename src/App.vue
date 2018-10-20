@@ -50,6 +50,7 @@ li{
 a{
   color: #5d9cec;
   text-decoration: none;
+  cursor: pointer;
 }
 h1{
   font-weight: 400;

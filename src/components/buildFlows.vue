@@ -2,37 +2,48 @@
 <div class="app">
   <el-container>
     <el-header height="50">
-      <el-row :gutter="5">
-        <el-col :span="5"><div class="grid-content bg-purple">
+      <el-row>
+        <el-col :span="2"><div class="grid-content bg-purple">
             <el-row>
               <el-button type="primary">创建新项目</el-button>
             </el-row>
           </div></el-col>
         <el-col :span="3" :offset="1"><div class="grid-content bg-purple">
-            共{{dataCount}}个项目
+            共{{total_projects}}个项目
           </div></el-col>
         <el-col :span="5" :offset="10"><div class="grid-content bg-purple">
             <el-input
               placeholder="请输入内容"
               prefix-icon="el-icon-search"
-              v-model="search">
+              v-model="search"
+              @keyup.enter.native="searchInfo">
             </el-input>
           </div></el-col>
       </el-row>
     </el-header>
     <el-main>
-      <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%">
-        <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column prop="name" label="项目名称" width="120"></el-table-column>
-        <el-table-column prop="updated" label="最近更新" width="120"></el-table-column>
-        <el-table-column prop="repoUrl" label="代码仓库" show-overflow-tooltip>
+      <el-table ref="multipleTable" :data="projects" tooltip-effect="dark" style="width: 100%">
+        <el-table-column type="selection"></el-table-column>
+        <el-table-column label="项目名称">
           <template slot-scope="scope">
-            <a :href="scope.row.repoUrl">{{scope.row.repoUrl}}</a>
+            <div><a :href="`/BuildFlowsList/ViewDetails/${scope.row.id}`">{{scope.row.name}}</a></div>
+            <div>{{scope.row.build_tag}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="status" label="执行状态" show-overflow-tooltip>
+        <el-table-column label="最近更新">
           <template slot-scope="scope">
-            <span :class="colorStyle(scope.row.status)">{{scope.row.status}}</span>
+            <div>{{getTime(scope.row.updated_at)}}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="代码仓库" show-overflow-tooltip>
+          <template slot-scope="scope">
+            <a :href="scope.row.code_src_url">{{scope.row.code_src}}</a>
+          </template>
+        </el-table-column>
+        <el-table-column label="执行状态" show-overflow-tooltip>
+          <template slot-scope="scope">
+            <span :class="scope.row.status.toLowerCase()">{{semanticStatusMap[scope.row.status]}}
+            </span>
           </template>
         </el-table-column>
         <el-table-column
@@ -48,88 +59,103 @@
         </el-table-column>
       </el-table>
       <el-pagination
-      @size-change="handlePageSizeChange"
-      @current-change="handleCurrentPageChange"
-      :current-page="parseInt(offset / pagesize) + 1"
-      :page-sizes="[2, 4, 6, 8, 10]"
-      :page-size="pagesize"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="dataCount">
-    </el-pagination>
+        @size-change="handlePageSizeChange"
+        @current-change="handleCurrentPageChange"
+        :current-page="currentPage"
+        :page-sizes="[3,6]"
+        :page-size="size"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total_projects">
+        </el-pagination>
     </el-main>
   </el-container>
 </div>
 </template>
+
 <script>
+import buildflow from '@/services/buildflow'
 export default {
   data: () => ({
     search: '',
-    tableData: [],
-    dataCount: 0,
-    pagesize: 2,
-    offset: 0
+    offset: 0,
+    size: 3,
+    currentPage: 1,
+    isLoading: true,
+    semanticStatusMap: {
+      'Failure': '执行失败',
+      'Error': '执行错误',
+      'Success': '执行成功',
+      '': '尚未构建'
+    },
+    projects: [],
+    total_projects: 0
   }),
-  created () {
-    this.getProjectInfo()
-  },
-  watch: {
-    search: function (val, oldVal) {
-      this.getProjectInfo()
-    }
-  },
-  methods: {
-    getProjectInfo () {
-      // let query = `?pagesize=${this.pagesize}offset=${this.offset}&search=${this.search}`
-      let query = `?offset=${this.offset}&search=${this.search}&size=${this.pagesize}`
-      console.log(this.search)
-      this.axios.get(`https://api.daocloud.io/v1/ship/projects${query}`, {headers: {'Authorization': this.$cookies.get('token')}}).then(value => {
-        let data = value.data.projects
-        for (var i = 0; i < data.length; i++) {
-          this.tableData.push({
-            name: data[i].project.name,
-            updated: parseInt((new Date().getTime() -
-            ((data[i].project.updated_at) * 1000)) / 1000 / 60 / 60 / 24 / 30),
-            repoUrl: data[i].project.repo_url,
-            status: (() => {
-              if (data[i].last_build) {
-                if (data[i].last_build.status === 'Failure') {
-                  return '执行失败'
-                } else if (data[i].last_build.status === 'Success') {
-                  console.log('succ')
-                  return '执行成功'
-                }
-              } else {
-                return '尚未构建'
-              }
-            })()
+  created: function () {
+    buildflow.listProjects(this.offset, this.size, this.search)
+      .then(res => {
+        this.total_projects = res.data.total_count
+        res.data.projects.forEach(item => {
+          this.projects.push({
+            id: item.project.buildflow_id,
+            name: item.project.name,
+            build_tag: item.last_build ? item.last_build.tag : '',
+            updated_at: item.project.updated_at,
+            code_src: item.project.source,
+            code_src_url: item.project.repo_url,
+            code_src_kind: item.project.remote,
+            status: item.last_build ? item.last_build.status : ''
           })
-        }
-        this.dataCount = data.length
+        })
       })
-    },
-    colorStyle (color) {
-      if (color === '执行成功') {
-        return 'success'
-      } else if (color === '执行失败') {
-        return 'failure'
-      }
-    },
-    enter () {
-      alert('jhh')
-      this.getProjectInfo()
+  },
+  // created: function () {
+  //   buildflow.listProjects(this.offset, this.size, this.search)
+  //     .then(res => {
+  //       this.total_projects = res.data.total_count
+  //       res.data.projects.forEach(item => {
+  //         this.projects.push({
+  //           id: item.project.buildflow_id,
+  //           name: item.project.name,
+  //           build_tag: item.last_build ? item.last_build.tag : '',
+  //           updated_at: item.project.updated_at,
+  //           code_src: item.project.source,
+  //           code_src_url: item.project.repo_url,
+  //           code_src_kind: item.project.remote,
+  //           status: item.last_build ? item.last_build.status : ''
+  //         })
+  //       })
+  //     })
+  // },
+  // watch: {
+  //   search: function (val, oldVal) {
+  //     this.getProjectInfo()
+  //   }
+  // },
+  // computed: {
+  //   tableData: function(){
+  //     let res = []
+  //   }
+  // },
+  methods: {
+    searchInfo (text) {
+      this.projects = buildflow.listProjects(this.offset, this.size, this.search)
     },
     handlePageSizeChange (e) {
-      this.pagesize = e
+      this.size = e
       this.offset = 0
-      this.getProjectInfo()
+      this.projects = buildflow.listProjects(this.offset, this.size, this.search)
     },
     // 当前页号改变时，根据页号算出当前 offset，并重新获取数据
     handleCurrentPageChange (e) {
-      this.offset = this.pagesize * (e - 1)
-      this.getProjectInfo()
+      // this.currentPage = e
+      this.offset = this.size * (e - 1)
+      this.projects = buildflow.listProjects(this.offset, this.size, this.search)
     },
     viewDetails () {
       this.$router.push({path: '/BuildFlowsList/ViewDetails'})
+    },
+    getTime (value) {
+      return this.$moment(value * 1000).fromNow()
     }
   }
 }
@@ -145,6 +171,7 @@ export default {
 <style>
 div.app{
   background-color: #E9EEF3;
+  text-align: left;
 }
 div.app .el-header{
   background-color: #E9EEF3;
@@ -156,5 +183,19 @@ div.app .el-header{
   color: #333;
   text-align: center;
   /* padding:0px 20px 20px 20px; */
+}
+.el-table,.el-row{
+  text-align: left;
+}
+.el-row{
+  vertical-align: middle;
+  height: 100%
+}
+.el-col{
+  height:100%;
+}
+.grid-content .bg-purple{
+  height: 100%;
+  vertical-align: middle;
 }
 </style>
