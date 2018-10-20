@@ -26,8 +26,18 @@ module.exports = [
     sub: [
       {
         name: '镜像仓库',
-        componentName: 'MirrorWarehouse',
-        path: 'MirrorWarehouse'
+        componentName: 'MirrorWarehouseList',
+        path: 'MirrorWarehouseList/MirrorWarehouse',
+        children: [
+          {
+            name: 'MirrorWarehouse',
+            componentName: 'MirrorWarehouse'
+          },
+          {
+            name: 'MirrorWarehouseItemInfo',
+            componentName: 'MirrorWarehouseItemInfo'
+          }
+        ]
       },
       {
         name: '收藏夹',

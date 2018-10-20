@@ -54,16 +54,16 @@ router.beforeEach((to, from, next) => {
   }
 })
 // this.$cookies.set()
-// axios.interceptors.request.use(function (config) {
-//   // Do something before request is sent
-//   config.headers.Authorization = this.$cookies.get()
-//   return config
-// }, function (error) {
-//   // Do something with request error
-//   // return Promise.reject(error)
-//   console.log(error)
-//   router.push({path: '/login'})
-// })
+axios.interceptors.request.use(function (config) {
+  // Do something before request is sent
+  config.headers.Authorization = Vue.prototype.$cookies.get('token')
+  return config
+}, function (error) {
+  // Do something with request error
+  // return Promise.reject(error)
+  console.log(error)
+  router.push({path: '/login'})
+})
 
 // router.afterEach(transition => {
 // NProgress.done();

@@ -2,7 +2,6 @@
   <div id="sidebar">
     <logo></logo>
     <navmenu v-bind:namespace='namespace'></navmenu>
-    <div @click="kk()">uu</div>
   </div>
 </template>
 <script>
@@ -15,10 +14,6 @@ export default {
     navmenu: NavMenu
   },
   methods: {
-    kk () {
-      console.log('ff')
-      this.$router.push('/ddd')
-    }
   }
 }
 </script>
