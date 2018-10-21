@@ -41,7 +41,7 @@ export default {
     TransactionRecord
   },
   methods: {
-    substitution (component) {
+    substitution(component) {
       this.currentTabComponent = component
     }
   }

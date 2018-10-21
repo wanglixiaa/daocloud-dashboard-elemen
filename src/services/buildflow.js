@@ -24,13 +24,15 @@ import axios from 'axios'
 //   })
 //   return result
 // }
-const listProjects = (page = 0, size = 3, search) => axios.get(`https://api.daocloud.io/v1/ship/projects`, {
-  params: {
-    size,
-    search,
-    offset: page * size
-  }
-})
+const listProjects = (page = 0, size = 3, search) =>
+  axios.get(`https://api.daocloud.io/v1/ship/projects`, {
+    params: {
+      size,
+      search,
+      offset: (page - 1) * size
+    }
+  })
 export default {
-  listProjects
+  listProjects: listProjects
 }
+// console.log(listProjects)

@@ -46,11 +46,11 @@ export default {
     menu: personalMenu
   }),
   watch: {
-    namespace: function (val, oldVal) {
+    namespace: function(val, oldVal) {
       this.menu = val
     }
   },
-  created () {
+  created() {
     // console.log('ddd')
     // console.log(this.menu)
     // console.log(this.$store.state.menu)
@@ -59,10 +59,10 @@ export default {
   },
   props: ['namespace'],
   methods: {
-    handleOpen (key, keyPath) {
+    handleOpen(key, keyPath) {
       // console.log(key, keyPath)
     },
-    handleClose (key, keyPath) {
+    handleClose(key, keyPath) {
       // console.log(key, keyPath)
     }
   }

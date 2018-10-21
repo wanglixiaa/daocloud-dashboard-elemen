@@ -54,17 +54,17 @@
 </template>
 <script>
 export default {
-  data () {
+  data() {
     return {
       tableData: [],
       centerDialogVisible: false
     }
   },
-  created () {
+  created() {
     this.getRepoInfo()
   },
   methods: {
-    getRepoInfo () {
+    getRepoInfo() {
       let query = `?offset=0&size=10&stream_room=20018a36.1539706689.95ca8e0007dd2a2b6aa44a9bfd57f23e6a24696a`
       this.axios.get(` https://api.daocloud.io/v1/ship/project/671eae2e-0712-478b-9bcc-c5278efa020a/pipelines${query}`, {headers: {'Authorization': this.$cookies.get('token')}}).then(data => {
         this.tableData = data.data.builds

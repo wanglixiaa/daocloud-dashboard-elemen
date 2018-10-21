@@ -67,7 +67,7 @@ export default {
     formLabelWidth: '120px'
   }),
   methods: {
-    handleClose (done) {
+    handleClose(done) {
       // this.$confirm('确认关闭？')
       //   .then(_ => {
       //     done();

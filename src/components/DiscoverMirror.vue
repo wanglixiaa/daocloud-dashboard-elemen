@@ -116,7 +116,7 @@ export default {
     pagesize: 9,
     currentPage: 1
   }),
-  created () {
+  created() {
     this.getRepoInfo()
   },
   // ?ordering=-updated_at&page=3&page_size=9&q=&random=false
@@ -126,7 +126,7 @@ export default {
   // category_ids=programming-language,server&ordering=-updated_at&page=1&page_size=9&q=&random=false
   // category_ids=os,programming-language,server&ordering=-updated_at&page=1&page_size=9&q=&random=false
   methods: {
-    getRepoInfo (searchTypes) {
+    getRepoInfo(searchTypes) {
       let query = `?category_ids=${this.checkList.toString()}&ordering=-${!searchTypes ? 'updated_at' : searchTypes}&page=${this.currentPage}&page_size=${this.pagesize}&q=${this.search}&random=false`
       this.axios.get(`https://api.daocloud.io/hub/v2/store/repos${query}`, {headers: {'Authorization': this.$cookies.get('token')}}).then(data => {
         this.dataObject = data.data.results
@@ -134,17 +134,17 @@ export default {
       })
     },
     // pagesize 改变时重设当前页号，并重新获取数据
-    handlePageSizeChange (e) {
+    handlePageSizeChange(e) {
       this.pagesize = e
       this.offset = 0
       this.getRepoInfo()
     },
     // 当前页号改变时，根据页号算出当前 offset，并重新获取数据
-    handleCurrentPageChange (e) {
+    handleCurrentPageChange(e) {
       this.currentPage = e
       this.getRepoInfo()
     },
-    handleCommand (command) {
+    handleCommand(command) {
       if (command === 'updated_at') {
         this.searchType = '更新时间'
       } else {
@@ -152,10 +152,10 @@ export default {
       }
       this.getRepoInfo(command)
     },
-    handleCheckAllChange () {
+    handleCheckAllChange() {
       this.getRepoInfo()
     },
-    selectSource () {
+    selectSource() {
       if (this.source === 'featured') {
         this.getRepoInfo()
         this.featured = true
@@ -173,7 +173,7 @@ export default {
         this.disabled = true
       }
     },
-    searchRepo () {
+    searchRepo() {
       this.getRepoInfo()
     }
   }
