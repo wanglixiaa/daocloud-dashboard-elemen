@@ -47,7 +47,7 @@ export default {
     ]
   }),
   methods: {
-    exchange (component) {
+    exchange(component) {
       this.currentTabComponent = component
     }
   }

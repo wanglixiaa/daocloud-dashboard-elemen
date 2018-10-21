@@ -57,11 +57,11 @@ export default {
     search: '',
     tableData: []
   }),
-  created () {
+  created() {
     this.getProjectInfo()
   },
   methods: {
-    getProjectInfo () {
+    getProjectInfo() {
       this.axios.get('https://api.daocloud.io/hub/v2/hub/daohub/repos?',
         {headers: {'Authorization': this.$cookies.get('token')}}).then(data => {
         // console.log(data)
@@ -88,7 +88,7 @@ export default {
         // }
       })
     },
-    getItemInfo (value) {
+    getItemInfo(value) {
       this.$router.push('/MirrorWarehouseList/MirrorWarehouseItemInfo')
     }
   }

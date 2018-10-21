@@ -36,7 +36,7 @@ export default {
     userCenter: '用户中心',
     imgSrc: 'https://cdn-daoweb-prod.daocloud.io/static/noavatar01.png'
   }),
-  created () {
+  created() {
     this.axios.get('https://api.daocloud.io/get-token-info', {headers: {'Authorization': this.$cookies.get('token')}}).then(response => {
       this.user = response.data.user.username
       // this.$store.state.menu = personalMenu
@@ -46,7 +46,7 @@ export default {
     })
   },
   methods: {
-    handleCommand (command) {
+    handleCommand(command) {
       if (command === 'signout') {
         this.$router.push({path: '/login'})
       } else if (command === 'personal') {

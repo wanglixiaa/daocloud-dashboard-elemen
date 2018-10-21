@@ -64,11 +64,11 @@ export default {
     mirror_name: '',
     tableData: []
   }),
-  created () {
+  created() {
     this.getProjectInfo()
   },
   methods: {
-    getProjectInfo () {
+    getProjectInfo() {
       this.axios.get('https://api.daocloud.io/hub/v2/hub/starred/repos?',
         {headers: {'Authorization': this.$cookies.get('token')}}).then(data => {
         for (let i = 0; i < data.data.total_count; i++) {

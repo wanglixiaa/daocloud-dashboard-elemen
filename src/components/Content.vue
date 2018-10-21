@@ -20,13 +20,13 @@ import Sidebar from '@/components/Sidebar'
 import Header from '@/components/Header'
 import buildFlows from '@/components/buildFlows'
 export default {
-  data () {
+  data: () => {
     return {
       namespace: []
     }
   },
   methods: {
-    loadNamespace: function (data) {
+    loadNamespace: data => {
       this.namespace = data
       console.log(data)
     }
@@ -39,7 +39,7 @@ export default {
 }
 </script>
 <style lang="scss">
-.el-header{
+.el-header {
   background-color: #fff;
   color: #333;
   text-align: center;
@@ -48,20 +48,20 @@ export default {
 }
 
 .el-aside {
-  background-color: #D3DCE6;
+  background-color: #d3dce6;
   color: #333;
   text-align: center;
   height: 100%;
 }
 
 .el-main {
-  background-color: #E9EEF3;
+  background-color: #e9eef3;
   color: #333;
   text-align: center;
-  padding:0px 0px 0px 0px;
+  padding: 0px 0px 0px 0px;
 }
 
-.el-container{
-  height:100%;
+.el-container {
+  height: 100%;
 }
 </style>

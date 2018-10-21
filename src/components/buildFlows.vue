@@ -9,7 +9,7 @@
             </el-row>
           </div></el-col>
         <el-col :span="3" :offset="1"><div class="grid-content bg-purple">
-            共{{total_projects}}个项目
+            共{{projects.total}}个项目
           </div></el-col>
         <el-col :span="5" :offset="10"><div class="grid-content bg-purple">
             <el-input
@@ -22,7 +22,7 @@
       </el-row>
     </el-header>
     <el-main>
-      <el-table ref="multipleTable" :data="projects" tooltip-effect="dark" style="width: 100%">
+      <el-table v-loading="projects.isLoading" ref="multipleTable" :data="projects.content" tooltip-effect="dark" style="width: 100%">
         <el-table-column type="selection"></el-table-column>
         <el-table-column label="项目名称">
           <template slot-scope="scope">
@@ -30,11 +30,11 @@
             <div>{{scope.row.build_tag}}</div>
           </template>
         </el-table-column>
-        <el-table-column label="最近更新">
+        <!-- <el-table-column label="最近更新">
           <template slot-scope="scope">
             <div>{{getTime(scope.row.updated_at)}}</div>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column label="代码仓库" show-overflow-tooltip>
           <template slot-scope="scope">
             <a :href="scope.row.code_src_url">{{scope.row.code_src}}</a>
@@ -61,11 +61,11 @@
       <el-pagination
         @size-change="handlePageSizeChange"
         @current-change="handleCurrentPageChange"
-        :current-page="currentPage"
+        :current-page="projectListParams.page"
         :page-sizes="[3,6]"
-        :page-size="size"
+        :page-size="projectListParams.size"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="total_projects">
+        :total="projects.total">
         </el-pagination>
     </el-main>
   </el-container>
@@ -74,127 +74,123 @@
 
 <script>
 import buildflow from '@/services/buildflow'
+
 export default {
   data: () => ({
-    search: '',
-    offset: 0,
-    size: 3,
-    currentPage: 1,
-    isLoading: true,
-    semanticStatusMap: {
-      'Failure': '执行失败',
-      'Error': '执行错误',
-      'Success': '执行成功',
-      '': '尚未构建'
+    projectListParams: {
+      page: 1,
+      size: 3,
+      search: ''
     },
-    projects: [],
-    total_projects: 0
+    projects: {
+      content: [],
+      total: 0,
+      isLoading: true
+    },
+    search: '',
+    semanticStatusMap: {
+      Failure: '执行失败',
+      Error: '执行错误',
+      Success: '执行成功',
+      '': '尚未构建'
+    }
   }),
-  created: function () {
-    buildflow.listProjects(this.offset, this.size, this.search)
-      .then(res => {
-        this.total_projects = res.data.total_count
-        res.data.projects.forEach(item => {
-          this.projects.push({
-            id: item.project.buildflow_id,
-            name: item.project.name,
-            build_tag: item.last_build ? item.last_build.tag : '',
-            updated_at: item.project.updated_at,
-            code_src: item.project.source,
-            code_src_url: item.project.repo_url,
-            code_src_kind: item.project.remote,
-            status: item.last_build ? item.last_build.status : ''
+
+  created: function() {
+    this.fetchProjects()
+  },
+
+  watch: {
+    projectListParams: {
+      handler: function(to, from) {
+        this.fetchProjects()
+      },
+      deep: true
+    }
+  },
+
+  methods: {
+    fetchProjects() {
+      this.projects.content = []
+      buildflow
+        .listProjects(
+          this.projectListParams.page,
+          this.projectListParams.size,
+          this.projectListParams.search
+        )
+        .then(res => {
+          this.projects.isLoading = false
+          this.projects.total = res.data.total_count
+          res.data.projects.forEach(item => {
+            this.projects.content.push({
+              id: item.project.buildflow_id,
+              name: item.project.name,
+              build_tag: item.last_build ? item.last_build.tag : '',
+              updated_at: item.project.updated_at,
+              code_src: item.project.source,
+              code_src_url: item.project.repo_url,
+              code_src_kind: item.project.remote,
+              status: item.last_build ? item.last_build.status : ''
+            })
           })
         })
-      })
-  },
-  // created: function () {
-  //   buildflow.listProjects(this.offset, this.size, this.search)
-  //     .then(res => {
-  //       this.total_projects = res.data.total_count
-  //       res.data.projects.forEach(item => {
-  //         this.projects.push({
-  //           id: item.project.buildflow_id,
-  //           name: item.project.name,
-  //           build_tag: item.last_build ? item.last_build.tag : '',
-  //           updated_at: item.project.updated_at,
-  //           code_src: item.project.source,
-  //           code_src_url: item.project.repo_url,
-  //           code_src_kind: item.project.remote,
-  //           status: item.last_build ? item.last_build.status : ''
-  //         })
-  //       })
-  //     })
-  // },
-  // watch: {
-  //   search: function (val, oldVal) {
-  //     this.getProjectInfo()
-  //   }
-  // },
-  // computed: {
-  //   tableData: function(){
-  //     let res = []
-  //   }
-  // },
-  methods: {
-    searchInfo (text) {
-      this.projects = buildflow.listProjects(this.offset, this.size, this.search)
     },
-    handlePageSizeChange (e) {
-      this.size = e
-      this.offset = 0
-      this.projects = buildflow.listProjects(this.offset, this.size, this.search)
+
+    handlePageSizeChange(e) {
+      this.projectListParams.size = e
     },
     // 当前页号改变时，根据页号算出当前 offset，并重新获取数据
-    handleCurrentPageChange (e) {
-      // this.currentPage = e
-      this.offset = this.size * (e - 1)
-      this.projects = buildflow.listProjects(this.offset, this.size, this.search)
+    handleCurrentPageChange(e) {
+      this.projectListParams.page = e
     },
-    viewDetails () {
-      this.$router.push({path: '/BuildFlowsList/ViewDetails'})
+    viewDetails() {
+      this.$router.push({ path: '/BuildFlowsList/ViewDetails' })
     },
-    getTime (value) {
+    getTime(value) {
       return this.$moment(value * 1000).fromNow()
+    },
+    searchInfo(e) {
+      this.projectListParams.search = this.search
     }
   }
 }
 </script>
 <style lang="scss" scoped>
-.success{
+.success {
   color: green;
 }
-.failure{
-  color: red
+.failure {
+  color: red;
 }
 </style>
 <style>
-div.app{
-  background-color: #E9EEF3;
+div.app {
+  background-color: #e9eef3;
   text-align: left;
 }
-div.app .el-header{
-  background-color: #E9EEF3;
-  margin:20px 0 0;
+div.app .el-header {
+  background-color: #e9eef3;
+  margin: 20px 0 0;
   /* padding:0px 20px 20px 20px; */
 }
 .el-main {
-  background-color: #E9EEF3;
+  background-color: #e9eef3;
   color: #333;
   text-align: center;
   /* padding:0px 20px 20px 20px; */
 }
-.el-table,.el-row{
+.el-table,
+.el-row {
   text-align: left;
 }
-.el-row{
+.el-row {
   vertical-align: middle;
-  height: 100%
+  height: 100%;
 }
-.el-col{
-  height:100%;
+.el-col {
+  height: 100%;
 }
-.grid-content .bg-purple{
+.grid-content .bg-purple {
   height: 100%;
   vertical-align: middle;
 }

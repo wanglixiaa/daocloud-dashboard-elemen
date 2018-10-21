@@ -10,7 +10,7 @@ const store = new Vuex.Store({
     menu: personalMenu
   },
   mutations: {
-    change (state) {
+    change(state) {
       if (state.menu === cachaMenu) {
         state.menu = personalMenu
       } else {

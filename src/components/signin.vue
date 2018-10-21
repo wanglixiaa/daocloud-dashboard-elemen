@@ -36,11 +36,11 @@ export default {
     captchaId: '',
     tips: ''
   }),
-  created () {
+  created() {
     this.captchaText()
   },
   methods: {
-    signinJudge () {
+    signinJudge() {
       if (this.email && this.password && this.captcha) {
         this.signin()
       } else if (!this.email) {
@@ -51,7 +51,7 @@ export default {
         this.$refs.captcha.focus()
       }
     },
-    enter () {
+    enter() {
       if (event.target.id === 'email') {
         this.$refs.password.focus()
       } else if (event.target.id === 'password') {
@@ -60,7 +60,7 @@ export default {
         this.$refs.signin.click()
       }
     },
-    signin () {
+    signin() {
       this.axios.post('https://api.daocloud.io/access-token', {
         captcha_id: this.captchaId,
         captcha_solution: this.captcha,
@@ -99,7 +99,7 @@ export default {
         }
       })
     },
-    captchaText () {
+    captchaText() {
       this.axios.get('https://api.daocloud.io/captcha/generate-id').then(e => {
         this.captchaId = e.data.captcha_id
       })
