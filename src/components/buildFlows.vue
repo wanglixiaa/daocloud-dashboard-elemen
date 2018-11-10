@@ -30,11 +30,11 @@
             <div>{{scope.row.build_tag}}</div>
           </template>
         </el-table-column>
-        <!-- <el-table-column label="最近更新">
+        <el-table-column label="最近更新">
           <template slot-scope="scope">
             <div>{{getTime(scope.row.updated_at)}}</div>
           </template>
-        </el-table-column> -->
+        </el-table-column>
         <el-table-column label="代码仓库" show-overflow-tooltip>
           <template slot-scope="scope">
             <a :href="scope.row.code_src_url">{{scope.row.code_src}}</a>
@@ -42,14 +42,14 @@
         </el-table-column>
         <el-table-column label="执行状态" show-overflow-tooltip>
           <template slot-scope="scope">
-            <span :class="scope.row.status.toLowerCase()">{{semanticStatusMap[scope.row.status]}}
+            <span :class="scope.row.status.toLowerCase()">{{scope.row.status}}
             </span>
           </template>
         </el-table-column>
         <el-table-column
           show-overflow-tooltip>
           <template slot-scope="scope">
-            <el-dropdown size="medium" split-button type="primary" @click="viewDetails">查看详情
+            <el-dropdown size="medium" split-button type="primary" @click="viewDetails(scope.row.buildflow_id)">查看详情
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item>手动触发</el-dropdown-item>
                 <el-dropdown-item>删除</el-dropdown-item>
@@ -74,6 +74,7 @@
 
 <script>
 import buildflow from '@/services/buildflow'
+import _ from 'lodash'
 
 export default {
   data: () => ({
@@ -87,13 +88,7 @@ export default {
       total: 0,
       isLoading: true
     },
-    search: '',
-    semanticStatusMap: {
-      Failure: '执行失败',
-      Error: '执行错误',
-      Success: '执行成功',
-      '': '尚未构建'
-    }
+    search: ''
   }),
 
   created: function() {
@@ -130,7 +125,9 @@ export default {
               code_src: item.project.source,
               code_src_url: item.project.repo_url,
               code_src_kind: item.project.remote,
-              status: item.last_build ? item.last_build.status : ''
+              status:
+                buildflow.semanticStatusMap[_.get(item, 'last_build.status')],
+              buildflow_id: item.project.buildflow_id
             })
           })
         })
@@ -143,8 +140,9 @@ export default {
     handleCurrentPageChange(e) {
       this.projectListParams.page = e
     },
-    viewDetails() {
-      this.$router.push({ path: '/BuildFlowsList/ViewDetails' })
+    viewDetails(id) {
+      console.log(`'/BuildFlows/${id}'`)
+      this.$router.push({ path: `/BuildFlows/${id}` })
     },
     getTime(value) {
       return this.$moment(value * 1000).fromNow()

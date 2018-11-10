@@ -6,7 +6,7 @@ module.exports = [
       {
         name: '项目',
         componentName: 'BuildFlowsList',
-        path: 'BuildFlowsList/buildFlows',
+        path: '/buildFlows',
         children: [
           {
             name: 'buildFlows',
@@ -27,7 +27,7 @@ module.exports = [
       {
         name: '镜像仓库',
         componentName: 'MirrorWarehouseList',
-        path: 'MirrorWarehouseList/MirrorWarehouse',
+        path: '/MirrorWarehouse',
         children: [
           {
             name: 'MirrorWarehouse',

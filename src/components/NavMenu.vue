@@ -28,7 +28,7 @@
           </template>
           <el-menu-item-group v-for="sub in item.sub" :key="sub.componentName">
             <!-- <el-menu-item :index="sub.children[0]?`${sub.componentName}/${sub.children.componentName}`:null" v-text="sub.name">选项1</el-menu-item> -->
-            <el-menu-item :index="`/${sub.path}`" v-text="sub.name">选项1</el-menu-item>
+            <el-menu-item :index="`${sub.path}`" v-text="sub.name"></el-menu-item>
             <!-- <el-menu-item :index="`${sub.componentName}`" v-text="sub.name">选项1</el-menu-item> -->
           </el-menu-item-group>
         </el-submenu>
