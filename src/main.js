@@ -7,6 +7,8 @@ import router from './router'
 import store from './store'
 import VueCookies from 'vue-cookies'
 import moment from 'moment'
+import VueCodemirror from 'vue-codemirror'
+import 'codemirror/lib/codemirror.css'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCoffee } from '@fortawesome/free-solid-svg-icons'
@@ -23,6 +25,12 @@ Vue.config.productionTip = false
 Vue.use(ElementUI)
 Vue.use(VueCookies)
 Vue.use(AsyncComputed)
+Vue.use(
+  VueCodemirror /* {
+  options: { theme: 'base16-dark', ... },
+  events: ['scroll', ...]
+} */
+)
 
 Vue.prototype.axios = axios
 Vue.prototype.$moment = moment

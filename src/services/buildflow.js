@@ -24,6 +24,14 @@ import axios from 'axios'
 //   })
 //   return result
 // }
+
+const semanticStatusMap = {
+  Failure: '执行失败',
+  Error: '执行错误',
+  Success: '执行成功',
+  Cancelled: '执行取消',
+  '': '尚未构建'
+}
 const listProjects = (page = 0, size = 3, search) =>
   axios.get(`https://api.daocloud.io/v1/ship/projects`, {
     params: {
@@ -33,6 +41,7 @@ const listProjects = (page = 0, size = 3, search) =>
     }
   })
 export default {
+  semanticStatusMap,
   listProjects: listProjects
 }
 // console.log(listProjects)

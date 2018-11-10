@@ -61,43 +61,46 @@ export default {
       }
     },
     signin() {
-      this.axios.post('https://api.daocloud.io/access-token', {
-        captcha_id: this.captchaId,
-        captcha_solution: this.captcha,
-        email_or_mobile: this.email,
-        password: this.password
-      }).then((value) => {
-        var user = {
-          access_token: value.access_token,
-          expires_in: value.expires_in,
-          uid: value.uid
-        }
-        this.$cookies.set('token', value.data.access_token)
-        console.log(this.$cookies.get('token'))
-        // setTimeout(alert(this.$cookies.get('token')), 1000)
-        // alert(this.$cookies.get('token'))
-        sessionStorage.setItem('user', JSON.stringify(user))
+      this.axios
+        .post('https://api.daocloud.io/access-token', {
+          captcha_id: this.captchaId,
+          captcha_solution: this.captcha,
+          email_or_mobile: this.email,
+          password: this.password
+        })
+        .then(value => {
+          var user = {
+            access_token: value.access_token,
+            expires_in: value.expires_in,
+            uid: value.uid
+          }
+          this.$cookies.set('token', value.data.access_token)
+          console.log(this.$cookies.get('token'))
+          // setTimeout(alert(this.$cookies.get('token')), 1000)
+          // alert(this.$cookies.get('token'))
+          sessionStorage.setItem('user', JSON.stringify(user))
 
-        this.$router.push({path: '/BuildFlowsList/buildFlows'})
-      }).catch(error => {
-        console.log(error)
-        console.log(error.response.data.error_id)
-        if (error.response.data.error_id === 'login.password_not_match') {
-          this.$refs.password.focus()
-          this.tips = '密码错误'
-          this.captchaText()
-        } else if (error.response.data.error_id === 'check_captcha_fail') {
-          this.$refs.password.focus()
-          this.tips = '验证码错误'
-          this.password = ''
-          this.captcha = ''
-          this.captchaText()
-        } else if (error.response.data.error_id === 'login.user_not_found') {
-          this.$refs.email.focus()
-          this.tips = '用户名错误'
-          this.captchaText()
-        }
-      })
+          this.$router.push({ path: '/buildFlows' })
+        })
+        .catch(error => {
+          console.log(error)
+          console.log(error.response.data.error_id)
+          if (error.response.data.error_id === 'login.password_not_match') {
+            this.$refs.password.focus()
+            this.tips = '密码错误'
+            this.captchaText()
+          } else if (error.response.data.error_id === 'check_captcha_fail') {
+            this.$refs.password.focus()
+            this.tips = '验证码错误'
+            this.password = ''
+            this.captcha = ''
+            this.captchaText()
+          } else if (error.response.data.error_id === 'login.user_not_found') {
+            this.$refs.email.focus()
+            this.tips = '用户名错误'
+            this.captchaText()
+          }
+        })
     },
     captchaText() {
       this.axios.get('https://api.daocloud.io/captcha/generate-id').then(e => {
@@ -109,92 +112,92 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-hr.header-line{
+hr.header-line {
   width: 120px;
   height: 1px;
   margin: 6px auto 14px;
   border: 0;
   background-color: #e4e7ed;
 }
-.form-group a.pull-right{
+.form-group a.pull-right {
   float: right;
 }
-.form-group input.has-captcha{
+.form-group input.has-captcha {
   width: calc(100% - 95px);
 }
-.form-group .captcha{
+.form-group .captcha {
   float: right;
 }
-.form-group:last-child{
+.form-group:last-child {
   text-align: left;
   margin-bottom: 30px;
 }
 </style>
 <style lang="scss">
-.account-container{
-font-size: 14px;
-position: relative;
-width: 310px;
-margin: 0 auto;
-padding: 27px 20px 30px;
-border-radius: 4px;
-background-color: #fff;
-box-shadow: 0 15px 30px 0 rgba(0,0,1,.1);
-h2{
-  font-size: 17px;
-  font-weight: 400;
-  line-height: 24px;
-  margin: 0;
-  padding: 0 20px;
-  text-align: center;
-  color: #595f69;
-}
-hr{
-  display:block;
-  unicode-bidi: isolate;
-  margin-block-start: 0.5em;
-  margin-block-end: 0.5em;
-  margin-inline-start: auto;
-  margin-inline-end: auto;
-  overflow: hidden;
-  border-style: inset;
-  border-width: 1px;
-}
-.captcha{
-  display: inline-block;
-  width: 85px;
-  height: 32px;
-  border-radius: 2px;
-  border-color: black;
-}
-button.signin{
-  height: 30px;
-  width: 100%;
-  padding: 8px 18px;
-  line-height: 1px;
-  border-radius: 4px;
-  color: #fff;
-  background-color: #3890ff;
-  border-color: #217ef2;
-  vertical-align: middle;
+.account-container {
   font-size: 14px;
-  font-weight: 400;
-}
-}
-.form-group{
-  margin-bottom: 14px;
-  label{
+  position: relative;
+  width: 310px;
+  margin: 0 auto;
+  padding: 27px 20px 30px;
+  border-radius: 4px;
+  background-color: #fff;
+  box-shadow: 0 15px 30px 0 rgba(0, 0, 1, 0.1);
+  h2 {
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 24px;
+    margin: 0;
+    padding: 0 20px;
+    text-align: center;
+    color: #595f69;
+  }
+  hr {
+    display: block;
+    unicode-bidi: isolate;
+    margin-block-start: 0.5em;
+    margin-block-end: 0.5em;
+    margin-inline-start: auto;
+    margin-inline-end: auto;
+    overflow: hidden;
+    border-style: inset;
+    border-width: 1px;
+  }
+  .captcha {
+    display: inline-block;
+    width: 85px;
+    height: 32px;
+    border-radius: 2px;
+    border-color: black;
+  }
+  button.signin {
+    height: 30px;
+    width: 100%;
+    padding: 8px 18px;
+    line-height: 1px;
+    border-radius: 4px;
+    color: #fff;
+    background-color: #3890ff;
+    border-color: #217ef2;
+    vertical-align: middle;
     font-size: 14px;
-    font-weight :400;
+    font-weight: 400;
+  }
+}
+.form-group {
+  margin-bottom: 14px;
+  label {
+    font-size: 14px;
+    font-weight: 400;
     line-height: 24px;
     display: block;
-    margin-bottom :5px;
+    margin-bottom: 5px;
     color: #9ba3af;
     text-align: left;
   }
-  input{
+  input {
     line-height: 1;
-    width:100%;
+    width: 100%;
     height: 32px;
     margin: 0;
     padding: 0 10px;
@@ -205,25 +208,25 @@ button.signin{
     box-shadow: none;
     overflow: hidden;
   }
-  input:focus{
-    border:1px solid #3890ff;
-    box-shadow:0 0 0 2px rgba(56,144,255,.15)
+  input:focus {
+    border: 1px solid #3890ff;
+    box-shadow: 0 0 0 2px rgba(56, 144, 255, 0.15);
   }
 }
-.change-page{
-font-size: 14px;
-display: block;
-width: 310px;
-margin: 30px auto 0;
-padding: 16px;
-text-align: center;
-color: rgba(255,255,255,.9);
-border: 1px solid rgba(255,255,255,.12);
-border-radius: 4px;
-background-color: rgba(255,255,255,.12);
-text-shadow:0 1px 4px rgba(0,0,0,.1)
+.change-page {
+  font-size: 14px;
+  display: block;
+  width: 310px;
+  margin: 30px auto 0;
+  padding: 16px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.12);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
-div.tips{
-  color:red;
+div.tips {
+  color: red;
 }
 </style>
