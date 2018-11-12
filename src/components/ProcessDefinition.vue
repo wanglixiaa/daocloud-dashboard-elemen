@@ -59,7 +59,8 @@
     <parallelTask @parallelTaskDialog="closeDialog"
     :dialogVisible="parallelTaskDialog" :stageName='stageName'></parallelTask>
 
-     <modifyTask :modifyTaskDialog.sync="modifyTaskDialogVisible" :template="template"
+     <modifyTask :modifyTaskDialog.sync="modifyTaskDialogVisible"
+     :taskForm="taskForm"
      @update:flow="stage=$event" :task="task"></modifyTask>
   </div>
 </template>
@@ -82,7 +83,7 @@ export default {
       stage: [],
       stageName: '',
       templates: [],
-      template: {},
+      taskForm: {},
       task: {},
       form: {
         stageName: '',
@@ -114,6 +115,11 @@ export default {
         return true
       }
     }
+    // taskForm:{
+    //   get:function(){
+    //     return _.cloneDeep(taskForm[0])
+    //   }
+    // }
   },
   methods: {
     getRepoInfo() {
@@ -136,8 +142,6 @@ export default {
     },
     // 确定下拉框显示状态
     getStyle(item) {
-      console.log(item)
-      // this.styles = !this.styles
       item.show = !item.show
     },
     // 打开弹出框
@@ -202,11 +206,11 @@ export default {
     },
     modifyTask(stageName, task) {
       this.modifyTaskDialogVisible = true
-      var template = this.templates.filter((item, index) => {
+      var taskForm = this.templates.filter(item => {
         return item.job_type === task.job_type
       })
       this.task = _.cloneDeep(task)
-      this.template = template[0]
+      this.taskForm = _.cloneDeep(taskForm[0])
     },
     closeModifyTaskDialog(stage) {
       this.modifyTaskDialogVisible = false
@@ -259,12 +263,6 @@ div.app {
   padding: 0;
   border: 0;
 }
-// div.warning {
-//   background-color: red;
-//   margin: 10px 20px 0;
-//   color: #b81f17;
-//   border-color: #f0c2c0;
-// }
 .Instructions {
   width: 15px;
   height: 15px;

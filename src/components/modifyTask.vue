@@ -11,10 +11,15 @@
         </ul>
         <div>
           <keep-alive>
-            <component :template.sync="template"
+            <component :modifyTaskDialog='modifyTaskDialog' :taskForm="taskForm"
              :task="task" :is="currentComponent">
             </component>
           </keep-alive>
+          <!-- <keep-alive>
+            <component :taskForm.sync="taskForm"
+             :task="task" :is="currentComponent">
+            </component>
+          </keep-alive> -->
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -42,11 +47,11 @@ export default {
       ]
     }
   },
-  props: ['modifyTaskDialog', 'template', 'task'],
+  props: ['modifyTaskDialog', 'taskForm', 'task'],
   computed: {
     title: function() {
-      if (this.template.config) {
-        return `编辑${this.template.config.name}任务`
+      if (this.taskForm.config) {
+        return `编辑${this.taskForm.config.name}任务`
       } else {
         return ''
       }
@@ -61,8 +66,8 @@ export default {
     },
     saving() {
       var newTaskForm = {}
-      if (this.template) {
-        this.template.config.arguments.forEach(item => {
+      if (this.taskForm) {
+        this.taskForm.config.arguments.forEach(item => {
           if (item.type === 'strlist') {
             newTaskForm[item.id] = item.default.split('\n')
           } else {
