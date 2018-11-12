@@ -1,7 +1,7 @@
 <template>
   <div>
-    <el-form label-position="left" ref="taskForm" :model="template" label-width="100px">
-      <div v-for="item in template.config.arguments" :key="item.id">
+    <el-form label-position="left" ref="taskForm" :model="taskForm" label-width="100px">
+      <div v-for="item in taskForm.config.arguments" :key="item.id">
         <el-form-item v-if="item.type==='image'" :label="item.name" prop="image">
           <el-input v-model="item.default.split(':')[0]"></el-input>
           <el-input v-model="item.default.split(':')[1]"></el-input>
@@ -42,7 +42,6 @@
 export default {
   data() {
     return {
-      taskForm: {},
       index: 0,
       cmOptions: {
         tabSize: 4,
@@ -67,29 +66,28 @@ export default {
       }
     }
   },
-  props: ['template', 'task'],
+  props: ['modifyTaskDialog', 'taskForm', 'task'],
   created() {
     this.getTaskForm()
   },
   watch: {
-    template: {
-      handler: function(to, from) {
-        this.$emit('update:template', this.template)
-      },
-      deep: true
+    modifyTaskDialog(val, oldVal) {
+      if (val === true) {
+        this.getTaskForm()
+      }
     }
   },
   methods: {
     getTaskForm() {
-      for (let i = 0; i < this.template.config.arguments.length; i++) {
-        if (this.template.config.arguments[i].type === 'strlist') {
-          this.template.config.arguments[i].default = this.task[
-            this.template.config.arguments[i].id
+      for (let i = 0; i < this.taskForm.config.arguments.length; i++) {
+        if (this.taskForm.config.arguments[i].type === 'strlist') {
+          this.taskForm.config.arguments[i].default = this.task[
+            this.taskForm.config.arguments[i].id
           ].join('\n')
           continue
         }
-        this.template.config.arguments[i].default = this.task[
-          this.template.config.arguments[i].id
+        this.taskForm.config.arguments[i].default = this.task[
+          this.taskForm.config.arguments[i].id
         ]
       }
     }
