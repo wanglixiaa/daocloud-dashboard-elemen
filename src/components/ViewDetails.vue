@@ -33,24 +33,52 @@
     <el-dialog
       title="手动触发流水线"
       :visible.sync="dialogVisible"
-      width="30%"
+      width="50%"
       center>
       <el-form ref="form" :model="form" label-width="80px">
         <el-form-item label="触发方式">
-          <!-- <el-select v-model="分支" :placeholder="this.branches[0].name">
-            <el-input
-              placeholder="请输入内容"
-              prefix-icon="el-icon-search"
-              v-model="input21">
-            </el-input>
-          </el-select> -->
+          <div><button><span>{{tab}}</span>{{tabItem}}</button></div>
         </el-form-item>
+        <div>
+          <el-input
+            placeholder="请输入内容"
+            prefix-icon="el-icon-search"
+            v-model="keyword"></el-input>
+          <el-tabs v-model="activeName">
+            <el-tab-pane v-for="tab in tabs" :key="tab.id" :label="tab.label" :name="tab.name">
+              <div :class="item.styleState" v-if="tab.name==='branch'" @click="selectTriggerType(item,tab.label,tab.name)" v-for="item in form.branches" :key="item.id">{{item.name}}</div>
+              <div :class="item.styleState" v-if="tab.name==='tag'" @click="selectTriggerType(item,tab.label,tab.name)" v-for="item in form.tags" :key="item.id">{{item.name}}</div>
+            </el-tab-pane>
+          </el-tabs>
+        </div>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button type="primary" @click="confirm()">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- <el-select v-model="value7" placeholder="请选择">
+    <el-option-group>
+      <el-option
+      v-for="item in options"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value">
+    </el-option>
+      
+    </el-option-group>
+
+    <el-option-group>
+      <el-select v-model="value8" filterable placeholder="请选择">
+    <el-option
+      v-for="item in options"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value">
+    </el-option>
+  </el-select>
+    </el-option-group>
+  </el-select> -->
   </div>
 </template>
 <script>
@@ -60,6 +88,15 @@ import Setting from '@/components/Setting'
 
 export default {
   data: () => ({
+    tabs: [{ label: '分支', name: 'branch' }, { label: '标签', name: 'tag' }],
+    tab: '',
+    tabItem: '',
+    tabName: '',
+    triggerType: '',
+    keyword: '',
+    activeName: 'branch',
+    branchValue: '',
+    tagValue: '',
     form: {},
     name: '',
     source: '',
@@ -72,10 +109,89 @@ export default {
       { name: '流程定义', component: ProcessDefinitionContainer },
       { name: '设置', component: Setting }
     ]
+    // options3: [
+    //   {
+    //     label: '热门城市',
+    //     options: [
+    //       {
+    //         value: 'Shanghai',
+    //         label: '上海'
+    //       },
+    //       {
+    //         value: 'Beijing',
+    //         label: '北京'
+    //       }
+    //     ]
+    //   },
+    //   {
+    //     label: '城市名',
+    //     options: [
+    //       {
+    //         value: 'Chengdu',
+    //         label: '成都'
+    //       },
+    //       {
+    //         value: 'Shenzhen',
+    //         label: '深圳'
+    //       },
+    //       {
+    //         value: 'Guangzhou',
+    //         label: '广州'
+    //       },
+    //       {
+    //         value: 'Dalian',
+    //         label: '大连'
+    //       }
+    //     ]
+    //   }
+    // ],
+    // value7: '',
+    // options: [
+    //   {
+    //     value: '选项1',
+    //     label: '黄金糕'
+    //   },
+    //   {
+    //     value: '选项2',
+    //     label: '双皮奶'
+    //   },
+    //   {
+    //     value: '选项3',
+    //     label: '蚵仔煎'
+    //   },
+    //   {
+    //     value: '选项4',
+    //     label: '龙须面'
+    //   },
+    //   {
+    //     value: '选项5',
+    //     label: '北京烤鸭'
+    //   }
+    // ],
+    // value8: ''
   }),
   created() {
     this.getProjectInfo()
   },
+  watch: {
+    keyword: function(val, oldVal) {
+      this.form.branches.forEach(item => {
+        if (item.name.indexOf(this.keyword) === -1) {
+          item.styleState = 'show'
+        } else {
+          item.styleState = ''
+        }
+      })
+      this.form.tags.forEach(item => {
+        if (item.name.indexOf(this.keyword) === -1) {
+          item.styleState = 'show'
+        } else {
+          item.styleState = ''
+        }
+      })
+    }
+  },
+  computed: {},
   methods: {
     exchange(component) {
       this.currentTabComponent = component
@@ -97,10 +213,37 @@ export default {
           }/branches-tags`
         )
         .then(res => {
+          this.form = res.data
+          this.form.branches.forEach(item => {
+            item.styleState = ''
+          })
+          this.form.tags.forEach(item => {
+            item.styleState = ''
+          })
+        })
+    },
+    handleClick(tab, event) {
+      console.log(tab, event)
+    },
+    selectTriggerType(item, tab, name) {
+      this.tab = tab
+      this.tabItem = item.name
+      this.tabName = name
+      // this.triggerType = `${tab}:${item.name}`
+    },
+    confirm() {
+      let tab = {}
+      tab[this.tabName] = this.tabItem
+      this.dialogVisible = false
+      this.axios
+        .post(
+          `https://api.daocloud.io/v1/ship/project/${
+            this.$route.params.id
+          }/pipelines`,
+          tab
+        )
+        .then(res => {
           console.log(res)
-          this.branches = res.data.branches
-          this.tags = res.data.tags
-          console.log(this.branches[0].name)
         })
     }
   }
@@ -154,5 +297,8 @@ div.top-header {
 }
 div.container {
   text-align: left;
+}
+.show {
+  display: none;
 }
 </style>
