@@ -23,7 +23,7 @@
         <el-form-item v-else-if="item.type==='strlist'" :label="item.name" prop="strlist">
           <codemirror v-model="item.default" :options="cmOptions"></codemirror>
         </el-form-item>
-        <!-- <el-form-item v-else-if="item.type==='services'" :label="item.name" prop="services">
+        <el-form-item v-else-if="item.type==='services'" :label="item.name" prop="services">
           <el-select v-model="item.default" placeholder="选择服务">
             <el-option label="mysql" value="mysql"></el-option>
             <el-option label="redis" value="redis"></el-option>
@@ -33,7 +33,7 @@
             <el-option label="postgres" value="postgres"></el-option>
             <el-option label="kairosdb" value="kairosdb"></el-option>
           </el-select>
-        </el-form-item> -->
+        </el-form-item>
       </div>
     </el-form>
   </div>
@@ -52,16 +52,16 @@ export default {
       },
       rules: {
         name: [{ required: true, message: '请输入', trigger: 'blur' }],
-        // image: [{ required: true, message: '请输入', trigger: 'change' }],
+        image: [{ required: true, message: '请输入', trigger: 'change' }],
         kvlist: [{}],
-        // string: [{ required: true, message: '请输入', trigger: 'change' }],
-        // strlist: [
-        //   {
-        //     required: true,
-        //     message: '输入用以安装依赖或者执行测试的命令',
-        //     trigger: 'blur'
-        //   }
-        // ],
+        string: [{ required: true, message: '请输入', trigger: 'change' }],
+        strlist: [
+          {
+            required: true,
+            message: '输入用以安装依赖或者执行测试的命令',
+            trigger: 'blur'
+          }
+        ],
         services: [{}]
       }
     }
